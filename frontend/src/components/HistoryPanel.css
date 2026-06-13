@@ -1,0 +1,140 @@
+/* HistoryPanel */
+.history-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.history-table th {
+  text-align: left;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-2);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border-0);
+}
+
+.history-table td {
+  font-size: 12px;
+  color: var(--text-1);
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border-0);
+}
+
+.history-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.history-table tbody tr:hover {
+  background: var(--bg-2);
+}
+
+.history-fname {
+  font-weight: 500;
+  color: var(--text-0);
+  max-width: 140px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.history-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.history-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.history-dot.normal { background: var(--green); }
+.history-dot.abnormal { background: var(--red); }
+
+.history-pred { text-transform: capitalize; font-weight: 500; }
+.history-pred.normal { color: var(--green); }
+.history-pred.abnormal { color: var(--red); }
+
+.history-conf {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  color: var(--text-0);
+}
+
+.history-time {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-2);
+}
+
+.history-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 16px;
+  text-align: center;
+}
+
+.history-empty svg {
+  color: var(--text-2);
+  opacity: 0.3;
+  width: 22px;
+  height: 22px;
+}
+
+.history-empty p {
+  font-size: 12px;
+  color: var(--text-2);
+}
+
+.history-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border-0);
+}
+
+.history-header-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-0);
+}
+
+.history-header-left svg {
+  width: 15px;
+  height: 15px;
+  color: var(--text-2);
+}
+
+.history-clear {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: var(--red-muted);
+  color: var(--red);
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.history-clear:hover {
+  background: rgba(239,68,68,0.2);
+}
+
+.history-clear svg {
+  width: 12px;
+  height: 12px;
+}
