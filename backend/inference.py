@@ -1,7 +1,7 @@
 import torch
 
 from model import build_model
-from utils.audio import preprocess_audio
+from utils.audio import preprocess_audio, spectrogram_to_image_base64
 
 
 device = torch.device(
@@ -24,7 +24,7 @@ model.eval()
 
 def predict(audio_path):
 
-    spec = preprocess_audio(
+    spec, log_mel = preprocess_audio(
         audio_path
     )
 
@@ -45,6 +45,9 @@ def predict(audio_path):
             dim=1
         ).item()
 
+    # Generate spectrogram image
+    spectrogram_image = spectrogram_to_image_base64(log_mel)
+
     return {
         "prediction":
             "abnormal"
@@ -52,5 +55,8 @@ def predict(audio_path):
             else "normal",
 
         "confidence":
-            float(probs[0][pred])
+            float(probs[0][pred]),
+        
+        "spectrogram": 
+            spectrogram_image
     }

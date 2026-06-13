@@ -17,6 +17,7 @@ function App() {
   const [audioUrl, setAudioUrl] = useState(null);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
+  const [spectrogram, setSpectrogram] = useState(null);
   const [error, setError] = useState("");
   const [history, setHistory] = useState([]);
 
@@ -50,6 +51,7 @@ function App() {
     if (audioUrl) URL.revokeObjectURL(audioUrl);
     setAudioUrl(null);
     setResult(null);
+    setSpectrogram(null);
     setError("");
   };
 
@@ -63,6 +65,7 @@ function App() {
       setLoading(true);
       setError("");
       setResult(null);
+      setSpectrogram(null);
 
       const formData = new FormData();
       formData.append("file", file);
@@ -78,6 +81,11 @@ function App() {
 
       const data = await response.json();
       setResult(data);
+
+      // Extract and store spectrogram
+      if (data.spectrogram) {
+        setSpectrogram(data.spectrogram);
+      }
 
       const newEntry = {
         filename: file.name,
@@ -127,7 +135,7 @@ function App() {
           {/* Right Column */}
           <div className="col-right">
             <ResultCard result={result} />
-            <SpectrogramPanel />
+            <SpectrogramPanel spectrogram={spectrogram} />
             <ExplainabilityPanel />
           </div>
         </div>
