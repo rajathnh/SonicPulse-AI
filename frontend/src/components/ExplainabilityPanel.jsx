@@ -1,44 +1,73 @@
-import { Brain, Eye, Layers } from "lucide-react";
+import { Brain, Layers } from "lucide-react";
 import "./PlaceholderPanel.css";
 
-function ExplainabilityPanel() {
+const API_BASE = "http://127.0.0.1:8000";
+
+function ExplainabilityPanel({ result }) {
   return (
     <div className="card">
       <div className="card-header">
         <Brain /> Explainability
       </div>
+
       <div className="card-body">
-        <div className="placeholder-body">
-          <Brain />
-          <div className="placeholder-title">Explainability Module Ready for Integration</div>
-          <div className="placeholder-text">
-            Grad-CAM attention heatmap and spectrogram overlay will be displayed here once the backend explainability endpoint is connected.
-          </div>
-        </div>
-        <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
-          <div style={{
-            flex: 1, padding: "10px 12px", borderRadius: "var(--radius-md)",
-            background: "var(--bg-2)", border: "1px solid var(--border-0)"
-          }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 11, color: "var(--text-2)", marginBottom: 2 }}>
-              <Eye size={12} /> Spectrogram View
+        {!result?.gradcam ? (
+          <div className="placeholder-body">
+            <Brain />
+            <div className="placeholder-title">
+              Explainability Module Ready for Integration
             </div>
-            <div style={{ fontSize: 11, color: "var(--text-2)" }}>
-              Acoustic signal visualization area
+            <div className="placeholder-text">
+              Upload an audio sample and run inference to generate
+              the Grad-CAM attention map.
             </div>
           </div>
-          <div style={{
-            flex: 1, padding: "10px 12px", borderRadius: "var(--radius-md)",
-            background: "var(--bg-2)", border: "1px solid var(--border-0)"
-          }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 11, color: "var(--text-2)", marginBottom: 2 }}>
-              <Layers size={12} /> Attention Heatmap
+        ) : (
+          <div
+            style={{
+              background: "var(--bg-2)",
+              border: "1px solid var(--border-0)",
+              borderRadius: "var(--radius-md)",
+              padding: 12,
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 6,
+                marginBottom: 12,
+                fontSize: 13,
+                fontWeight: 600,
+              }}
+            >
+              <Layers size={14} />
+              Grad-CAM Attention Heatmap
             </div>
-            <div style={{ fontSize: 11, color: "var(--text-2)" }}>
-              Model attention visualization area
+
+            <img
+              src={`${API_BASE}/results/${result.gradcam}`}
+              alt="Grad-CAM"
+              style={{
+                width: "100%",
+                borderRadius: 8,
+                display: "block",
+              }}
+            />
+
+            <div
+              style={{
+                marginTop: 10,
+                fontSize: 12,
+                color: "var(--text-2)",
+              }}
+            >
+              Red regions indicate areas of the spectrogram that
+              contributed most strongly to the model's anomaly
+              prediction.
             </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

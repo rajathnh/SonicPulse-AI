@@ -127,8 +127,8 @@ function App() {
           {/* Right Column */}
           <div className="col-right">
             <ResultCard result={result} />
-            <SpectrogramPanel />
-            <ExplainabilityPanel />
+            <SpectrogramPanel spectrogram={result?.spectrogram} />
+            <ExplainabilityPanel result={result} />
           </div>
         </div>
       </main>
