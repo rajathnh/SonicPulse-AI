@@ -1,6 +1,6 @@
 from fastapi import FastAPI, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
-
+from fastapi.staticfiles import StaticFiles
 import os
 import shutil
 
@@ -21,11 +21,10 @@ app.add_middleware(
 )
 
 UPLOAD_DIR = "uploads"
+RESULTS_DIR = "results"
 
-os.makedirs(
-    UPLOAD_DIR,
-    exist_ok=True
-)
+os.makedirs(UPLOAD_DIR, exist_ok=True)
+os.makedirs(RESULTS_DIR, exist_ok=True)
 
 
 @app.get("/")
@@ -35,7 +34,11 @@ def health_check():
         "status": "running"
     }
 
-
+app.mount(
+    "/results",
+    StaticFiles(directory="results"),
+    name="results"
+)
 @app.post("/predict")
 async def predict_audio(
     file: UploadFile = File(...)

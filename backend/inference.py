@@ -1,13 +1,23 @@
+import os
+import uuid
 import torch
 
 from model import build_model
-from utils.audio import preprocess_audio
+from utils.audio import (
+    preprocess_audio,
+    wav_to_spectrogram
+)
+
+from utils.gradcam import GradCAM
+from utils.gradcam_utils import save_gradcam
 
 
 device = torch.device(
-    "cuda" if torch.cuda.is_available()
+    "cuda"
+    if torch.cuda.is_available()
     else "cpu"
 )
+
 
 model = build_model()
 
@@ -22,35 +32,83 @@ model.to(device)
 model.eval()
 
 
+gradcam = GradCAM(
+    model,
+    model.conv_head
+)
+
+
 def predict(audio_path):
 
-    spec = preprocess_audio(
+    # tensor for model
+    spec_tensor, spectrogram_file = (
+        preprocess_audio(audio_path)
+    )
+
+    # original log-mel for GradCAM overlay
+    log_mel = wav_to_spectrogram(
         audio_path
     )
 
-    spec = spec.unsqueeze(0)
+    spec_tensor = (
+        spec_tensor
+        .unsqueeze(0)
+        .to(device)
+    )
 
-    spec = spec.to(device)
+    # forward pass
+    outputs = model(
+        spec_tensor
+    )
 
-    with torch.no_grad():
+    probs = torch.softmax(
+        outputs,
+        dim=1
+    )
 
-        outputs = model(spec)
+    pred = outputs.argmax(
+        dim=1
+    ).item()
 
-        probs = torch.softmax(
-            outputs,
-            dim=1
-        )
+    confidence = float(
+        probs[0][pred]
+    )
 
-        pred = outputs.argmax(
-            dim=1
-        ).item()
+    # Grad-CAM
+    cam = gradcam.generate(
+        spec_tensor,
+        pred
+    )
+
+    gradcam_file = (
+        f"gradcam_"
+        f"{uuid.uuid4().hex}.png"
+    )
+
+    gradcam_path = os.path.join(
+        "results",
+        gradcam_file
+    )
+
+    save_gradcam(
+        log_mel,
+        cam,
+        gradcam_path
+    )
 
     return {
+
         "prediction":
             "abnormal"
             if pred == 1
             else "normal",
 
         "confidence":
-            float(probs[0][pred])
+            confidence,
+
+        "spectrogram":
+            spectrogram_file,
+
+        "gradcam":
+            gradcam_file
     }
